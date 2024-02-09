@@ -1,11 +1,13 @@
+/* eslint-disable no-unused-vars */
 // CONFIGURAR APP
-const mensajeInicial = 'Adivina >:('
-let score = 21
-let highScore = 1
-const secretNumber = Math.trunc(Math.random() * 20 + 1)
+const mensajeInicial = 'Adivina :P'
+const INIT_SCORE = 20
+const INIT_HIGH_SCORE = 0
 
+// VARIABLES APP
+let score, highScore, secretNumber
 
-// SELECCIONAR ELEMENTOS DOM
+// SELECCIONAR ELEMENTOS DOMz
 const messageField = document.querySelector('.message')
 const scoreField = document.querySelector('.score')
 const highScoreField = document.querySelector('.highscore')
@@ -14,25 +16,45 @@ const checkButton = document.querySelector('.check')
 const againButton = document.querySelector('.again')
 const guessNumberField = document.querySelector('.guess')
 
-
 // INICIALIZAR APP
-messageField.textContent = mensajeInicial
-scoreField.textContent = score
-highScoreField.textContent = highScore
-secretNumberField.textContent = secretNumber
-
+initApp()
 
 // FUNCIONALIDAD APP
 checkButton.addEventListener('click', () => {
-    const guessNumber = Number(guessNumberField.value)
-    if (guessNumber > secretNumber) {
-        messageField.textContent = 'El número es menor'
-        score--
-        scoreField.textContent = score
-    } else if (guessNumber < secretNumber) {
-        messageField.textContent = 'El número es mayor'
-        score--
-    } else {
-        messageField.textContent='Acertaste!! :)'
-    } 
+  const guessNumber = Number(guessNumberField.value)
+  if (guessNumber > secretNumber) {
+    messageField.textContent = 'El número es menor'
+    score--
+    scoreField.textContent = score
+  } else if (guessNumber < secretNumber) {
+    messageField.textContent = 'El número es mayor'
+    score--
+  } else {
+    secretNumberField.textContent = secretNumber
+    messageField.textContent = 'Acertaste!! :)'
+    document.body.style.backgroundColor = '#136713'
+    checkButton.disabled = true
+    if (score > highScore) {
+      highScore = score
+      localStorage.setItem('highScore', highScore)
+      highScoreField.textContent = highScore
+    }
+  }
 })
+
+function initApp() {
+  score = INIT_SCORE
+  scoreField.textContent = score
+
+  highScore = Number(localStorage.getItem('highScore')) || INIT_HIGH_SCORE //TODO añadir try-catch??
+  highScoreField.textContent = highScore
+
+  messageField.textContent = mensajeInicial
+
+  document.body.style.backgroundColor = '#222'
+  checkButton.disabled = false
+  secretNumber = Math.trunc(Math.random() * 20 + 1)
+  secretNumberField.textContent = '?'
+}
+
+againButton.addEventListener('click', initApp)
